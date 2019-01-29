@@ -26,6 +26,7 @@ repositories {
 ext {
 	set('springCloudVersion', 'Greenwich.RELEASE')
 	set('swaggerVersion', '2.8.0')
+	set('httpClientVersion', '4.5.1')
 }
 
 dependencies {
@@ -34,6 +35,8 @@ dependencies {
 
 	compile "io.springfox:springfox-swagger2:${swaggerVersion}"
 	compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+
+	implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
 }
