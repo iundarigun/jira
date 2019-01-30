@@ -1,6 +1,7 @@
 package br.com.devcave.jira.controller;
 
 import br.com.devcave.jira.client.JiraClient;
+import br.com.devcave.jira.vo.IssueComponent;
 import br.com.devcave.jira.vo.IssueField;
 import br.com.devcave.jira.vo.IssuePriority;
 import br.com.devcave.jira.vo.IssueProject;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,13 +33,14 @@ public class JiraController {
     @Autowired
     private JiraClient jiraClient;
 
-    @PostMapping("issues/project/{project}/issueType/{issueType}/priority/{priority}/bulk")
-    public HttpEntity<List<IssueResponse>> createIssues(@PathVariable(value = "project") String project,
-                                   @PathVariable(value = "issueType") String issueType,
-                                   @PathVariable(value = "priority") String priority,
-                                   @RequestParam(value = "user") String user,
-                                   @RequestParam(value = "password") String password,
-                                   @RequestBody String... titles) {
+    @PostMapping("issues/bulk")
+    public HttpEntity<List<IssueResponse>> createIssues(@RequestParam(value = "project") String project,
+                                                        @RequestParam(value = "issueType") String issueType,
+                                                        @RequestParam(value = "priority") String priority,
+                                                        @RequestParam(value = "user") String user,
+                                                        @RequestParam(value = "password") String password,
+                                                        @RequestParam(value = "components",required = false) Optional<String[]> components,
+                                                        @RequestBody String... titles) {
         log.info("M=createIssues, project={}, issueType={}, priority={}, user={}, password={}",
                 project, issueType, priority, user, password);
 
@@ -52,6 +56,11 @@ public class JiraController {
                             .project(new IssueProject(project))
                             .issuetype(new IssueType(issueType))
                             .priority(new IssuePriority(priority))
+                            .components(
+                                    Arrays.asList(components.orElse(new String[]{}))
+                                            .stream()
+                                            .map(c->new IssueComponent(c))
+                                            .collect(Collectors.toList()))
                             .build()
                 ).build();
             IssueResponse issueResponse = jiraClient.createIssue(token, issueRequest);

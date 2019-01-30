@@ -12,7 +12,7 @@ Para pegar info especificas do projeto:
 
 Para ver uma issue especifica e ver os ids de issueType e priority:
 
-```<url base do jira>/jira/rest/api/latest/issue/<identificador do jira pex ADM-22>```
+```<url base do jira>/rest/api/latest/issue/<identificador do jira pex ADM-22>```
 
 Documentação sobre a api:
 
